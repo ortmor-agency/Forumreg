@@ -92,6 +92,21 @@
         margin-bottom: 1rem;
       }
 
+      select {
+        padding: 0.8rem;
+        border-radius: 0.6rem;
+        border: none;
+        background: #18181b;
+        color: #f3f4f6;
+        font-size: 1rem;
+        outline: none;
+        transition: background 0.2s;
+      }
+
+      select:focus {
+        background: #27272a;
+      }
+
       @media (max-width: 500px) {
         .container {
           padding: 1rem 0.5rem;
@@ -142,6 +157,16 @@
             placeholder="Enter your email address"
           />
         </div>
+        <div class="form-group">
+          <label for="gamename">Choose your game *</label>
+          <select id="gamename" name="gamename" required>
+            <option  value="">Select a game</option>
+            <option value="BeatSaber">BeatSaber</option>
+            <option value="Pistol Whip">Pistol Whip</option>
+            <option value="Drone Shoot">Drone Shoot</option>
+            <option value="Epic Rollercoaster">Epic Rollercoaster</option>
+          </select>
+        </div>
         <button type="submit">Register</button>
         <div class="msg" id="msg"></div>
       </form>
@@ -164,6 +189,7 @@
           const name = document.getElementById("name").value.trim();
           const pincode = document.getElementById("pincode").value.trim();
           const email = document.getElementById("email").value.trim();
+          const gamename = document.getElementById("gamename").value;
 
           if (name.length < 2) {
             msg.textContent = "Please enter a valid name.";
@@ -177,12 +203,17 @@
             msg.textContent = "Please enter a valid email address.";
             return;
           }
+          if (!gamename) {
+            msg.textContent = "Please choose your game.";
+            return;
+          }
 
           const payload = {
             DATE: new Date().toLocaleString(),
             NAME: name,
             PINCODE: pincode,
             EMAIL: email,
+            GAMENAME: gamename
           };
 
           try {
