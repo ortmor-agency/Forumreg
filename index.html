@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #18181b;
+        color: #f3f4f6;
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .container {
+        background: #23232a;
+        padding: 2rem 1.5rem;
+        border-radius: 1.2rem;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        max-width: 400px;
+        width: 100%;
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #ffffff;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      label {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+        color: #a1a1aa;
+      }
+      input {
+        padding: 0.8rem;
+        border-radius: 0.6rem;
+        border: none;
+        background: #18181b;
+        color: #f3f4f6;
+        font-size: 1rem;
+        outline: none;
+        transition: background 0.2s;
+      }
+      input:focus {
+        background: #27272a;
+      }
+      button {
+        padding: 0.9rem;
+        border-radius: 0.6rem;
+        border: none;
+        background: #a855f7;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 0.5rem;
+      }
+      button:active {
+        opacity: 0.8;
+      }
+      .msg {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: #ee2222;
+      }
+
+      .logo {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 500px) {
+        .container {
+          padding: 1rem 0.5rem;
+          border-radius: 0.5rem;
+          width: 92%;
+        }
+        h2 {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+ 
+    <div class="container">
+        <div class="logo"><img style="object-fit: contain;" width="150px"  src="https://images.ortmoragency.com/portfolio-assets/Otherimages/Logo.webp" alt="logo" >  </img></div>
+      <h2>Event Registration</h2>
+      <form id="regForm" autocomplete="off">
+        <div class="form-group">
+          <label for="name">Name *</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            minlength="2"
+            placeholder="Enter your name"
+          />
+        </div>
+        <div class="form-group">
+          <label for="pincode">Pincode *</label>
+          <input
+            type="text"
+            id="pincode"
+            name="pincode"
+            required
+            pattern="\d{4,10}"
+            maxlength="10"
+            placeholder="Enter your pincode"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email (optional)</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email address"
+          />
+        </div>
+        <button type="submit">Register</button>
+        <div class="msg" id="msg"></div>
+      </form>
+    </div>
+    <script>
+      function uuidv4() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+          (
+            c ^
+            (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+          ).toString(16)
+        );
+      }
+      document
+        .getElementById("regForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const msg = document.getElementById("msg");
+          msg.textContent = "";
+          const name = document.getElementById("name").value.trim();
+          const pincode = document.getElementById("pincode").value.trim();
+          const email = document.getElementById("email").value.trim();
+
+          if (name.length < 2) {
+            msg.textContent = "Please enter a valid name.";
+            return;
+          }
+          if (!/^\d{4,10}$/.test(pincode)) {
+            msg.textContent = "Please enter a valid pincode ";
+            return;
+          }
+          if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            msg.textContent = "Please enter a valid email address.";
+            return;
+          }
+
+          const payload = {
+            DATE: new Date().toLocaleString(),
+            NAME: name,
+            PINCODE: pincode,
+            EMAIL: email,
+          };
+
+          try {
+            const res = await fetch(
+              "https://api.sheetbest.com/sheets/88fc2409-33b1-4312-a230-9792b13da1f3",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              }
+            );
+            if (res.ok) {
+              msg.textContent = "Registration successful!";
+              msg.style.color = "#22eea0";
+              document.getElementById("regForm").reset();
+              setTimeout(() => {
+                msg.textContent = "";
+              }, 2500);
+            } else {
+              msg.textContent = "Registration failed. Please try again.";
+              msg.style.color = "#FF0000";
+            }
+          } catch {
+            msg.textContent = "Network error. Please try again.";
+            msg.style.color = "#FF0000";
+          }
+        });
+    </script>
+  </body>
+</html>
